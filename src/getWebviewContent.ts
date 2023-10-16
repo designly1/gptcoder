@@ -44,6 +44,9 @@ export default function getWebviewContent(webviewView: vscode.WebviewView, conte
 			</svg>
 			<span>GPTCoder</span>
 		</h1>
+		<a href="https://gptcoder.vercel.app" target="_blank">
+			🤖 Visit Website
+		</a>
 		<button id="btn-add-to-stack">
 			<span class="codicon codicon-checklist"></span>
 			Add selection to Stack</button>
@@ -51,7 +54,7 @@ export default function getWebviewContent(webviewView: vscode.WebviewView, conte
 		<button id="btn-clear-stack">
 			<span class="codicon codicon-trash"></span>
 			Clear Stack</button>
-		<textarea id="prompt" placeholder="Ask GPTCoder..." style="width: 95%; height: 10rem;"></textarea>
+		<textarea id="prompt" placeholder="e.g. convert this into a class" style="width: 95%; height: 10rem;"></textarea>
 		<button id="btn-generate">
 			<span class="codicon codicon-play"></span>
 			Generate</button>

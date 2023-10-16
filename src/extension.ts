@@ -12,8 +12,11 @@ export function activate(context: vscode.ExtensionContext) {
 	const outputChannel = vscode.window.createOutputChannel('GPTCoder');
 	context.subscriptions.push(outputChannel);
 
+	// Clear the stack
+	context.workspaceState.update(GPTCoderWebviewProvider.stackKey, []);
+
 	// Greet user and show ouput channel
-	outputChannel.appendLine('Welcome to GPTCoder!');
+	outputChannel.appendLine('🤖Welcome to GPTCoder!');
 	outputChannel.show();
 
 	const gptcoderWebviewProvider = new GPTCoderWebviewProvider(context.extensionUri, context, outputChannel);

@@ -1,8 +1,19 @@
 {
   "name": "gptcoder",
   "displayName": "GPTCoder",
-  "description": "Your ChatGPT coding assistant!",
+  "description": "A context-aware GPT code completion extension for VS Code",
   "version": "0.0.1",
+  "publisher": "designly",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/designly1/gptcoder"
+  },
+  "license": "MIT",
+  "homepage": "https://gptcoder.vercel.app",
+  "author": {
+    "name": "Jay Simons",
+    "email": "jay@designly.biz"
+  },
   "engines": {
     "vscode": "^1.83.0"
   },
@@ -12,30 +23,24 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "gptcoder.helloWorld",
-        "title": "Hello World"
-      }
-    ],
+    "commands": [{
+      "command": "gptcoder.helloWorld",
+      "title": "Hello World"
+    }],
     "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "gptcoder",
-          "title": "GPTCoder",
-          "icon": "media/icon.svg"
-        }
-      ]
+      "activitybar": [{
+        "id": "gptcoder",
+        "title": "GPTCoder",
+        "icon": "media/icon.svg"
+      }]
     },
     "views": {
-      "gptcoder": [
-        {
-          "id": "gptcoder.main",
-          "name": "GPTCoder",
-          "type": "webview",
-          "retainContextWhenHidden": true
-        }
-      ]
+      "gptcoder": [{
+        "id": "gptcoder.main",
+        "name": "GPTCoder",
+        "type": "webview",
+        "retainContextWhenHidden": true
+      }]
     },
     "configuration": {
       "title": "GPTCoder",

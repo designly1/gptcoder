@@ -27,7 +27,7 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 			const selection = editor.selection;
 			const text = editor.document.getText(selection);
 			if (!text || text === '') {
-				vscode.window.showErrorMessage('GPTCoder: Please select some code!');
+				vscode.window.showErrorMessage('🤖GPTCoder: Please select some code!');
 				return;
 			}
 			vscode.env.clipboard.writeText(text);
@@ -61,22 +61,22 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 						const config = vscode.workspace.getConfiguration('gptcoder');
 						if (message.data.openAiKey !== undefined) {
 							config.update('openAiKey', message.data.openAiKey, vscode.ConfigurationTarget.Global);
-                            config.update('openAiModel', message.data.openAiModel, vscode.ConfigurationTarget.Global);
-							vscode.window.showInformationMessage('GPTCoder: Settings saved!');
+							config.update('openAiModel', message.data.openAiModel, vscode.ConfigurationTarget.Global);
+							vscode.window.showInformationMessage('🤖GPTCoder: Settings saved!');
 						}
 						webviewView.webview.postMessage({
-                            command: 'hideLoading',
-                        });
+							command: 'hideLoading',
+						});
 						break;
 					case 'openSettingsJson':
 						vscode.commands.executeCommand('workbench.action.openSettingsJson');
 						break;
 					case 'addSelectionToStack':
 						const text = this.addSelectionToStack();
-                        if (!text || text === '') {
-                            return;
-                        }
-						vscode.window.showInformationMessage('GPTCoder: Added selection to stack!');
+						if (!text || text === '') {
+							return;
+						}
+						vscode.window.showInformationMessage('🤖GPTCoder: Added selection to stack!');
 						webviewView.webview.postMessage({
 							command: 'addToStack',
 							data: text,
@@ -89,7 +89,7 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 						webviewView.webview.postMessage({
 							command: 'clearStack',
 						});
-						vscode.window.showInformationMessage('GPTCoder: Stack cleared!');
+						vscode.window.showInformationMessage('🤖GPTCoder: Stack cleared!');
 						break;
 					case 'getStack':
 						webviewView.webview.postMessage({
@@ -105,11 +105,17 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 							| string
 							| undefined;
 						if (openAiKey === undefined) {
-							vscode.window.showErrorMessage('GPTCoder: Your stack is empty!');
+							vscode.window.showErrorMessage('🤖GPTCoder: Your stack is empty!');
+							webviewView.webview.postMessage({
+								command: 'hideLoading',
+							});
 							return;
 						}
 						if (openAiModel === undefined) {
-							vscode.window.showErrorMessage('GPTCoder: Please set your OpenAI model in the settings!');
+							vscode.window.showErrorMessage('🤖GPTCoder: Please set your OpenAI model in the settings!');
+							webviewView.webview.postMessage({
+								command: 'hideLoading',
+							});
 							return;
 						}
 
@@ -117,13 +123,14 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 						const stack = this._context.workspaceState.get(GPTCoderWebviewProvider.stackKey) as
 							| string[]
 							| undefined;
+							console.log(stack);
 						if (!stack || stack.length === 0) {
 							vscode.window.showErrorMessage(
-								'GPTCoder: Please select some code and add it to the stack!',
+								'🤖GPTCoder: Please select some code and add it to the stack!',
 							);
-                            webviewView.webview.postMessage({
-                                command: 'hideLoading',
-                            });
+							webviewView.webview.postMessage({
+								command: 'hideLoading',
+							});
 							return;
 						}
 
@@ -133,7 +140,10 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 						const prompt = message.data;
 
 						if (!prompt || prompt === '') {
-							vscode.window.showErrorMessage('GPTCoder: Please enter a prompt!');
+							vscode.window.showErrorMessage('🤖GPTCoder: Please enter a prompt!');
+							webviewView.webview.postMessage({
+								command: 'hideLoading',
+							});
 							return;
 						}
 
@@ -156,7 +166,7 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 							},
 						];
 
-						this.output('Generating code...');
+						this.output(`🤖Generating code via model: ${openAiModel}`);
 						const timerStart = Date.now();
 
 						openai.chat.completions
@@ -173,14 +183,17 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 								const message = choices[0].message;
 								let text = message.content;
 								if (!text) {
-									vscode.window.showErrorMessage('GPTCoder: Error generating code!');
+									vscode.window.showErrorMessage('🤖GPTCoder: Error generating code!');
+									webviewView.webview.postMessage({
+										command: 'hideLoading',
+									});
 									return;
 								}
 
 								// Extract the language from the first line of the generated code
 								const language = text.split('\n')[0].trim().toLowerCase();
 								this.output(
-									`Generated code in ${timeTakenSeconds} seconds!\n\nDetected language: ${language}`,
+									`🤖Generated code in ${timeTakenSeconds} seconds!\nDetected language: ${language}`,
 								);
 
 								// Remove the first line of the generated code
@@ -202,13 +215,18 @@ export class GPTCoderWebviewProvider implements vscode.WebviewViewProvider {
 								});
 							})
 							.catch(err => {
-								vscode.window.showErrorMessage('GPTCoder: Error generating code!');
+								console.error(err);
+								vscode.window.showErrorMessage('🤖GPTCoder: Error generating code!');
+								webviewView.webview.postMessage({
+									command: 'hideLoading',
+								});
+								this.output(`🔥Error generating code:\n${err.message}`);
 							});
 						break;
 				}
 			},
 			undefined,
-			this._context.subscriptions, // <-- Use `this._context.subscriptions` here
+			this._context.subscriptions,
 		);
 
 		webviewView.webview.html = getWebviewContent(webviewView, this._context);
