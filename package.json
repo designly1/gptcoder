@@ -2,8 +2,9 @@
   "name": "gptcoder",
   "displayName": "GPTCoder",
   "description": "A context-aware GPT code completion extension for VS Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "designly",
+  "icon": "media/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/designly1/gptcoder"
